@@ -1,0 +1,440 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #fafafa;
+  --text: #343c3c;
+  --text-muted: #5e6666;
+  --accent: #abb495;
+  --font-sans: 'Satoshi Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size: 14px;
+  --font-size-small: 13px;
+  --transition: 150ms ease;
+}
+
+html {
+  background-color: var(--bg);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size);
+  font-weight: 450;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--bg);
+}
+
+/* Layout: pinned top-left */
+main {
+  max-width: 560px;
+  margin: 0;
+  padding: 3rem 1.5rem 4rem;
+}
+
+/* Progress */
+.progress {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  font-size: var(--font-size-small);
+}
+
+.progress .step {
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small);
+  font-weight: 450;
+  cursor: default;
+  transition: color var(--transition);
+}
+
+.progress button.step.completed {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.progress button.step.completed:hover {
+  color: var(--accent);
+}
+
+.progress .step.active {
+  color: var(--text);
+}
+
+.progress .step.completed {
+  color: var(--text);
+}
+
+.progress .step.future,
+.progress .step.locked {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+/* Form steps */
+.form-step {
+  display: none;
+  opacity: 0;
+}
+
+.form-step.active {
+  display: block;
+  animation: fadeIn 150ms ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+h1 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* Fieldset reset */
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+fieldset legend {
+  display: block;
+  font-size: var(--font-size);
+  color: var(--text);
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  padding: 0;
+}
+
+/* Fields */
+.field,
+.budget-fieldset {
+  margin-bottom: 1.75rem;
+}
+
+/* Question numbers */
+.q-num {
+  color: var(--text-muted);
+  margin-right: 0.15rem;
+}
+
+.field label {
+  display: block;
+  font-size: var(--font-size);
+  color: var(--text);
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.field .optional,
+.field .hint {
+  color: var(--text-muted);
+  font-size: var(--font-size-small);
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="tel"],
+.field input[type="url"],
+.field input[type="number"],
+.field input[type="date"],
+.field textarea {
+  display: block;
+  padding: 0.35rem 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size);
+  font-weight: 450;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--text-muted);
+  border-radius: 0;
+  outline: none;
+  transition: border-color var(--transition);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  transition: opacity var(--transition);
+}
+
+.field input:focus::placeholder,
+.field textarea:focus::placeholder {
+  opacity: 0;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-bottom-color: var(--text);
+}
+
+.field textarea {
+  resize: none;
+  line-height: 1.5;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Proportional widths */
+.input-short { width: 160px; max-width: 100%; }
+.input-medium { width: 260px; max-width: 100%; }
+.input-long { width: 380px; max-width: 100%; }
+
+/* Handle inputs (@username) */
+.handle-input {
+  display: inline-flex;
+  align-items: center;
+  width: 160px;
+  max-width: 100%;
+}
+
+.handle-prefix {
+  color: var(--text-muted);
+  font-size: var(--font-size);
+  padding: 0.35rem 0;
+  margin-right: 0.1rem;
+  user-select: none;
+}
+
+.handle-input input {
+  flex: 1;
+}
+
+/* Field description */
+.field-description {
+  display: block;
+  font-size: var(--font-size-small);
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Validation */
+.field .error {
+  display: none;
+  font-size: var(--font-size-small);
+  color: #8b3a3a;
+  margin-top: 0.25rem;
+}
+
+.field.invalid input,
+.field.invalid textarea {
+  border-bottom-color: #8b3a3a;
+}
+
+.field.invalid .error {
+  display: block;
+}
+
+/* Budget */
+.budget-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: var(--font-size);
+  color: var(--text);
+}
+
+.radio-label input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+
+.budget-amount {
+  margin-top: 0.5rem;
+}
+
+.budget-amount .currency-input {
+  display: flex;
+  align-items: center;
+}
+
+.budget-amount .field-description {
+  margin-top: 0.25rem;
+}
+
+.budget-amount.hidden,
+.budget-trade.hidden {
+  display: none;
+}
+
+.budget-trade {
+  margin-top: 0.5rem;
+}
+
+.currency-symbol {
+  color: var(--text-muted);
+  font-size: var(--font-size);
+  margin-right: 0.2rem;
+}
+
+/* Buttons */
+.btn-next,
+.btn-back {
+  font-family: var(--font-sans);
+  font-size: var(--font-size);
+  font-weight: 450;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.btn-next:hover,
+.btn-back:hover {
+  color: var(--accent);
+}
+
+.btn-next:focus-visible,
+.btn-back:focus-visible,
+.btn-submit:focus-visible {
+  outline: 1px solid var(--text);
+  outline-offset: 2px;
+}
+
+.btn-submit {
+  font-family: var(--font-sans);
+  font-size: var(--font-size);
+  font-weight: 450;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.btn-submit:hover {
+  color: var(--accent);
+}
+
+.btn-submit:disabled {
+  cursor: default;
+  text-decoration: none;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.step-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Confirmation */
+.confirmation p {
+  margin-bottom: 0.75rem;
+}
+
+.confirmation a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.confirmation a:hover,
+.privacy-note a:hover {
+  color: var(--accent);
+}
+
+.privacy-note {
+  margin-bottom: 1.5rem;
+}
+
+.privacy-note a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Date input */
+input[type="date"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+/* Remove number spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  main {
+    padding: 2rem 1rem 3rem;
+    max-width: none;
+  }
+
+  .input-short,
+  .input-medium,
+  .input-long {
+    width: 100%;
+  }
+
+  .handle-input {
+    width: 100%;
+  }
+
+  .progress {
+    gap: 1rem;
+  }
+}

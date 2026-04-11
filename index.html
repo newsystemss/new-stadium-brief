@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Stadium Brief</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <noscript>
+    <p style="padding: 2rem 1.5rem; color: #8b3a3a;">
+      This form requires JavaScript. Please enable JavaScript or email
+      <a href="mailto:stadium@newsystems.ca">stadium@newsystems.ca</a> directly.
+    </p>
+  </noscript>
+  <main>
+    <nav class="progress" aria-label="Form progress">
+      <button type="button" class="step active" data-step="1" aria-current="step">Contact</button>
+      <button type="button" class="step" data-step="2">Event Brief</button>
+      <span class="step" data-step="3">Confirmation</span>
+    </nav>
+
+    <form id="brief-form" novalidate>
+      <!-- Step 1: Contact Information -->
+      <section class="form-step active" data-step="1">
+        <h1>Contact Information</h1>
+
+        <div class="field">
+          <label for="firstName">First name</label>
+          <input type="text" id="firstName" name="firstName" required autocomplete="given-name" class="input-short" placeholder="Jane" maxlength="100" />
+          <span class="error" role="alert">Please enter your first name.</span>
+        </div>
+
+        <div class="field">
+          <label for="lastName">Last name</label>
+          <input type="text" id="lastName" name="lastName" required autocomplete="family-name" class="input-short" placeholder="Doe" maxlength="100" />
+          <span class="error" role="alert">Please enter your last name.</span>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autocomplete="email" class="input-medium" placeholder="jane@example.com" maxlength="200" />
+          <span class="error" role="alert">Please enter a valid email address.</span>
+        </div>
+
+        <div class="field">
+          <label for="twitter">Twitter <span class="optional">(optional)</span></label>
+          <div class="handle-input">
+            <span class="handle-prefix">@</span>
+            <input type="text" id="twitter" name="twitter" class="input-short" placeholder="handle" maxlength="50" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="instagram">Instagram <span class="optional">(optional)</span></label>
+          <div class="handle-input">
+            <span class="handle-prefix">@</span>
+            <input type="text" id="instagram" name="instagram" class="input-short" placeholder="handle" maxlength="50" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="website">Personal website/portfolio <span class="optional">(optional)</span></label>
+          <span class="field-description">Anything that will help us develop a better understanding of you and your body of work.</span>
+          <input type="url" id="website" name="website" class="input-medium" placeholder="https://yoursite.com" maxlength="300" />
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone number <span class="optional">(optional)</span></label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" class="input-medium" placeholder="416-555-0123" maxlength="20" />
+        </div>
+
+        <button type="button" class="btn-next" data-next="2">Next</button>
+      </section>
+
+      <!-- Step 2: Event Brief -->
+      <section class="form-step" data-step="2">
+        <h1>Event Brief</h1>
+
+        <div class="field">
+          <label for="idea"><span class="q-num">1.</span> In a few sentences, what is your event/project idea? How do you envision it happening within New Stadium?</label>
+          <textarea id="idea" name="idea" rows="1" required class="input-long" placeholder="" maxlength="5000"></textarea>
+          <span class="error" role="alert">Please describe your event idea.</span>
+        </div>
+
+        <div class="field">
+          <label for="alignment"><span class="q-num">2.</span> New takes subjects the world thinks it already understands and presents them in a way that makes people feel like they're seeing it for the first time. How would your event align with this mission?</label>
+          <textarea id="alignment" name="alignment" rows="1" required class="input-long" placeholder="" maxlength="5000"></textarea>
+          <span class="error" role="alert">Please describe how your event aligns with the mission.</span>
+        </div>
+
+        <div class="field">
+          <label for="spatial"><span class="q-num">3.</span> What are the spatial requirements of your event/project?</label>
+          <textarea id="spatial" name="spatial" rows="1" required class="input-long" placeholder="e.g., half-spatial, 8 tables, projector at front" maxlength="5000"></textarea>
+          <span class="error" role="alert">Please describe your spatial requirements.</span>
+        </div>
+
+        <div class="field">
+          <label for="attendees"><span class="q-num">4.</span> What is the ideal amount of attendees?</label>
+          <input type="text" id="attendees" name="attendees" required class="input-short" placeholder="e.g., 20-30" maxlength="50" />
+          <span class="error" role="alert">Please enter the ideal number of attendees.</span>
+        </div>
+
+        <div class="field">
+          <label for="takeaway"><span class="q-num">5.</span> What is the takeaway you are hoping attendees leave with?</label>
+          <textarea id="takeaway" name="takeaway" rows="1" required class="input-long" placeholder="" maxlength="5000"></textarea>
+          <span class="error" role="alert">Please describe the intended takeaway.</span>
+        </div>
+
+        <fieldset class="field budget-fieldset">
+          <legend><span class="q-num">6.</span> Do you have an existing venue budget?</legend>
+          <div class="budget-group">
+            <label class="radio-label">
+              <input type="radio" name="hasBudget" value="yes" />
+              <span>Yes</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="hasBudget" value="no" checked />
+              <span>No</span>
+            </label>
+          </div>
+          <div class="budget-amount hidden">
+            <span class="field-description">Indicating a budget range is acceptable.</span>
+            <div class="currency-input">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="budgetAmount" name="budgetAmount" min="0" step="1" placeholder="0" class="input-short" />
+            </div>
+          </div>
+          <fieldset class="budget-trade hidden trade-fieldset">
+            <legend>Would you be open to working out a "trade"?</legend>
+            <div class="budget-group">
+              <label class="radio-label">
+                <input type="radio" name="openToTrade" value="yes" />
+                <span>Yes</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="openToTrade" value="no" />
+                <span>No</span>
+              </label>
+            </div>
+          </fieldset>
+        </fieldset>
+
+        <div class="field">
+          <label for="idealDate"><span class="q-num">7.</span> What is the ideal date for this event/project?</label>
+          <input type="date" id="idealDate" name="idealDate" required class="input-short" />
+          <span class="error" role="alert">Please select a date.</span>
+        </div>
+
+        <div class="field">
+          <label for="runtime"><span class="q-num">8.</span> What is the ideal timeframe for your event including setup and teardown?</label>
+          <textarea id="runtime" name="runtime" rows="1" required class="input-long" placeholder="e.g., 5-6pm setup, 6-9pm event, 9-10pm teardown" maxlength="5000"></textarea>
+          <span class="error" role="alert">Please describe the timeframe.</span>
+        </div>
+
+        <p class="field-description privacy-note">Your information is stored securely and used only to evaluate your event brief. Questions? Email <a href="mailto:stadium@newsystems.ca">stadium@newsystems.ca</a></p>
+
+        <div class="step-nav">
+          <button type="button" class="btn-back" data-back="1">Previous</button>
+          <button type="submit" class="btn-submit">Submit</button>
+        </div>
+      </section>
+    </form>
+
+    <!-- Step 3: Confirmation -->
+    <section class="form-step confirmation" data-step="3">
+      <p>A confirmation has been sent to your email.</p>
+      <p>If your event/project is a fit, we will connect with you within a week to follow up with next steps.</p>
+      <p>If you have any further questions, please email <a href="mailto:stadium@newsystems.ca">stadium@newsystems.ca</a></p>
+      <p>Thank you for everything.</p>
+      <p>New</p>
+    </section>
+  </main>
+
+  <script src="form.js"></script>
+</body>
+</html>
