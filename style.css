@@ -81,7 +81,7 @@ header {
 }
 
 .site-nav a {
-  color: var(--text-muted);
+  color: #8a8a8a;
   text-decoration: none;
 }
 
@@ -90,11 +90,11 @@ header {
 }
 
 .site-nav a:hover {
-  color: var(--link-hover);
+  color: #aaaaaa;
 }
 
 .site-nav a.active {
-  color: var(--text);
+  color: #4a4a4a;
 }
 
 /* Layout: pinned top-left */
@@ -123,12 +123,12 @@ footer {
 }
 
 .footer-nav a {
-  color: var(--text-muted);
+  color: #8a8a8a;
   text-decoration: none;
 }
 
 .footer-nav a:hover {
-  color: var(--link-hover);
+  color: #aaaaaa;
 }
 
 /* Progress */
