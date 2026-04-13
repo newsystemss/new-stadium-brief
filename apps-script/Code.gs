@@ -76,6 +76,8 @@ function doPost(e) {
       data.twitter || '',
       data.instagram || '',
       data.website || '',
+      data.company || '',
+      data.referral || '',
       data.idea || '',
       data.alignment || '',
       data.spatial || '',
@@ -185,6 +187,8 @@ function sendTeamNotification(data, submissionId, timestamp) {
     data.twitter ? 'Twitter: @' + data.twitter : null,
     data.instagram ? 'Instagram: @' + data.instagram : null,
     data.website ? 'Website: ' + data.website : null,
+    data.company ? 'Company/Organization: ' + data.company : null,
+    data.referral ? 'Referred via: ' + data.referral : null,
     '',
     '--- Event Brief ---',
     '',
@@ -229,7 +233,7 @@ function doGet() {
 function setupSheet() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   sheet.setName(SHEET_NAME);
-  sheet.getRange(1, 1, 1, 21).setValues([[
+  sheet.getRange(1, 1, 1, 23).setValues([[
     'Timestamp',
     'Submission ID',
     'First Name',
@@ -239,6 +243,8 @@ function setupSheet() {
     'Twitter',
     'Instagram',
     'Website',
+    'Company/Organization',
+    'Referral Source',
     'Event Idea',
     'Mission Alignment',
     'Spatial Requirements',
@@ -252,6 +258,6 @@ function setupSheet() {
     'Notes',
     'Source'
   ]]);
-  sheet.getRange(1, 1, 1, 21).setFontWeight('bold');
+  sheet.getRange(1, 1, 1, 23).setFontWeight('bold');
   sheet.setFrozenRows(1);
 }

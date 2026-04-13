@@ -183,6 +183,8 @@ form.addEventListener('submit', async (e) => {
     twitter: document.getElementById('twitter').value.trim(),
     instagram: document.getElementById('instagram').value.trim(),
     website: document.getElementById('website').value.trim(),
+    company: document.getElementById('company').value.trim(),
+    referral: document.getElementById('referral').value.trim(),
     idea: document.getElementById('idea').value.trim(),
     alignment: document.getElementById('alignment').value.trim(),
     spatial: document.getElementById('spatial').value.trim(),
