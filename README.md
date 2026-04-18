@@ -16,14 +16,14 @@ A custom multi-step web form for collecting event and project briefs from people
 - **Data store:** Google Sheet (shared Drive, accessible by the New team)
 - **Hosting:** Netlify, auto-deploys from `main` branch
 - **Domain:** brief.newsystems.ca (CNAME to Netlify)
-- **Font:** Satoshi Variable via FontShare CDN
+- **Font:** Inter via Google Fonts CDN
 
 ## File structure
 
 ```
 new-stadium-brief/
   index.html          # The form (3 steps: Contact, Event Brief, Confirmation)
-  style.css           # All styles (Satoshi Variable, proportional inputs, mobile responsive)
+  style.css           # All styles (Inter, proportional inputs, mobile responsive)
   form.js             # Form logic (validation, navigation, submission, auto-expand textareas)
   netlify.toml        # Netlify deploy config + security headers
   apps-script/

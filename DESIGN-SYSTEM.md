@@ -5,18 +5,20 @@ This document defines the design system used by the New Stadium brief submission
 
 ## One-prompt migration instruction
 
-Update the newsystems.ca site's global CSS and layout to match the following design system. Replace the current Apfel Grotezk font with Satoshi Variable. Update all colors, spacing, typography, and interaction patterns to match. Preserve all existing page content and structure. Only change the visual layer.
+Update the newsystems.ca site's global CSS and layout to match the following design system. Use Inter as the primary font. Update all colors, spacing, typography, and interaction patterns to match. Preserve all existing page content and structure. Only change the visual layer.
 
 ---
 
 ## Font
 
-**Primary:** Satoshi Variable from FontShare
+**Primary:** Inter from Google Fonts
 ```html
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@1,2&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 ```
 
-**Stack:** `'Satoshi Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
+**Stack:** `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
 
 **Weights:**
 - Body text: 450 (variable weight, slightly heavier than regular)
@@ -199,7 +201,7 @@ Keep the existing thin scrollbar style but update colors:
 
 ## What to change in the existing site
 
-1. **Replace font:** Remove Apfel Grotezk, add Satoshi Variable via FontShare CDN
+1. **Replace font:** Use Inter via Google Fonts CDN
 2. **Update CSS variables:** Replace all color/spacing variables with the values above
 3. **Remove link arrows:** Delete the global `a::after` rule
 4. **Update layout:** Change from 15% left margin to `margin: 0; padding: 3rem 1.5rem 4rem;`

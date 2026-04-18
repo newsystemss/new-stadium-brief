@@ -45,7 +45,7 @@ No build step. No framework. Three files serve the entire frontend.
 
 ## Design System
 
-- **Font:** Satoshi Variable (weight 450 body, 500 headings, 14px base)
+- **Font:** Inter (weight 450 body, 500 headings, 14px base)
 - **Colors:** `--bg: #fafafa`, `--text: #343c3c`, `--text-muted: #5e6666`, `--accent: #abb495`, `--error: #8b3a3a`
 - **Layout:** Pinned top-left, max-width 560px, no centering
 - **Inputs:** Bottom-border only, proportional widths (short 160px, medium 260px, long full-width textarea)
@@ -94,4 +94,4 @@ Built the entire project from scratch in a single session. Started as a page in 
 ### Outstanding
 - DNS "Pending DNS verification" on Netlify may need time to fully clear
 - brief.newsystems.ca was showing an error page at session end (likely DNS propagation delay)
-- The `DESIGN-SYSTEM.md` file can be used as a prompt to migrate the main newsystems.ca site to match this form's design system (Satoshi Variable, new color palette, top-left layout)
+- The `DESIGN-SYSTEM.md` file can be used as a prompt to migrate the main newsystems.ca site to match this form's design system (Inter, new color palette, top-left layout)

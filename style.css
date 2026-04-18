@@ -14,7 +14,7 @@
   --accent: #abb495;
   --link: #343c3c;
   --link-hover: #aaaaaa;
-  --font-sans: 'Satoshi Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-size: 14px;
   --font-size-small: 13px;
   --transition: 150ms ease;
@@ -338,6 +338,10 @@ fieldset legend {
 
 .field.invalid .error {
   display: block;
+}
+
+.budget-fieldset.invalid legend {
+  color: #8b3a3a;
 }
 
 /* Budget */
