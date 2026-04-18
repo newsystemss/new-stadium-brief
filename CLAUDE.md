@@ -45,7 +45,7 @@ No build step. No framework. Three files serve the entire frontend.
 
 ## Design System
 
-- **Font:** Inter (weight 450 body, 500 headings, 14px base)
+- **Font:** Inter (weight 400 body, 500 headings, 14px base)
 - **Colors:** `--bg: #fafafa`, `--text: #343c3c`, `--text-muted: #5e6666`, `--accent: #abb495`, `--error: #8b3a3a`
 - **Layout:** Pinned top-left, max-width 560px, no centering
 - **Inputs:** Bottom-border only, proportional widths (short 160px, medium 260px, long full-width textarea)

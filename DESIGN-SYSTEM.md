@@ -21,7 +21,7 @@ Update the newsystems.ca site's global CSS and layout to match the following des
 **Stack:** `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
 
 **Weights:**
-- Body text: 450 (variable weight, slightly heavier than regular)
+- Body text: 400 (regular)
 - Headings: 500
 - No bold usage anywhere. The heaviest weight is 500.
 
@@ -171,7 +171,7 @@ Page/section transitions use a fadeIn animation:
 ## Buttons / Interactive text
 
 - Styled as underlined text links, not boxed buttons
-- Same font as body (14px, weight 450)
+- Same font as body (14px, weight 400)
 - Color: `var(--text)`
 - Hover: `var(--accent)`
 - Disabled: opacity 0.4
@@ -206,7 +206,7 @@ Keep the existing thin scrollbar style but update colors:
 3. **Remove link arrows:** Delete the global `a::after` rule
 4. **Update layout:** Change from 15% left margin to `margin: 0; padding: 3rem 1.5rem 4rem;`
 5. **Update nav/footer:** Match the muted/accent hover pattern
-6. **Update typography:** font-weight 450 for body, 500 for headings, 14px base size
+6. **Update typography:** font-weight 400 for body, 500 for headings, 14px base size
 7. **Add font smoothing:** antialiased rendering
 8. **Update transitions:** Standardize to 150ms ease
 9. **Update responsive breakpoints:** Simplify to a single 600px mobile breakpoint
