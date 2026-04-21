@@ -383,13 +383,8 @@ fieldset legend {
   margin-top: 0.25rem;
 }
 
-.budget-amount.hidden,
-.budget-trade.hidden {
+.budget-amount.hidden {
   display: none;
-}
-
-.budget-trade {
-  margin-top: 0.5rem;
 }
 
 .currency-symbol {

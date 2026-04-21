@@ -19,22 +19,16 @@ if (dateInput) {
 }
 
 // Budget toggle
-const budgetTrade = document.querySelector('.budget-trade');
-
 budgetRadios.forEach(radio => {
   radio.addEventListener('change', () => {
     if (radio.value === 'yes' && radio.checked) {
       budgetAmount.classList.remove('hidden');
-      budgetTrade.classList.add('hidden');
     } else if (radio.value === 'no' && radio.checked) {
       budgetAmount.classList.add('hidden');
-      budgetTrade.classList.remove('hidden');
     }
+    document.querySelector('.budget-fieldset').classList.remove('invalid');
   });
 });
-
-// Show trade question by default since "No" is checked
-budgetTrade.classList.remove('hidden');
 
 let highestStepReached = 1;
 
@@ -94,6 +88,23 @@ function validateStep(stepNum) {
       if (!firstInvalid) firstInvalid = input;
     }
   });
+
+  // Conditional validation for the budget fieldset on step 2.
+  if (stepNum === 2) {
+    const budgetFieldset = document.querySelector('.budget-fieldset');
+    budgetFieldset.classList.remove('invalid');
+
+    const budgetYes = document.querySelector('input[name="hasBudget"]:checked')?.value === 'yes';
+
+    if (budgetYes) {
+      const budgetInput = document.getElementById('budgetAmount');
+      if (!budgetInput.value.trim()) {
+        budgetFieldset.classList.add('invalid');
+        valid = false;
+        if (!firstInvalid) firstInvalid = budgetInput;
+      }
+    }
+  }
 
   if (firstInvalid) {
     firstInvalid.focus();
@@ -193,7 +204,7 @@ form.addEventListener('submit', async (e) => {
     takeaway: document.getElementById('takeaway').value.trim(),
     budget: budgetVal,
     idealDate: document.getElementById('idealDate').value,
-    openToTrade: hasBudget === 'no' ? (document.querySelector('input[name="openToTrade"]:checked')?.value || '') : 'N/A',
+    openToTrade: 'N/A',
   };
 
   try {
@@ -213,6 +224,7 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     hasSubmitted = false;
     submitBtn.disabled = false;
-    alert('Something went wrong. Please try again or email stadium@newsystems.ca directly.');
+    const detail = err && err.message ? err.message : 'Unknown error';
+    alert('Something went wrong: ' + detail + '\n\nPlease try again or email stadium@newsystems.ca directly.');
   }
 });
