@@ -8,9 +8,11 @@ const FORM_TOKEN = 'ns-brief-2026';
 const MAX_FIELD_LEN = 5000;
 const MAX_SUBMISSIONS_PER_HOUR = 50;
 const EMAIL_COOLDOWN_MS = 300000; // 5 minutes per email address
+const STATUS_COLUMN = 21; // 1-indexed column for Status flag (see setupSheet)
 
 function doPost(e) {
   try {
+    console.log('doPost: start');
     const data = JSON.parse(e.postData.contents);
 
     // CSRF token check
@@ -51,6 +53,8 @@ function doPost(e) {
     // Remove the token from data before storing
     delete data._token;
 
+    console.log('doPost: validation passed for ' + data.email);
+
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
     if (!sheet) {
       return respond({ error: 'Sheet not found' });
@@ -64,6 +68,8 @@ function doPost(e) {
     // Generate submission ID and timestamp
     const timestamp = new Date();
     const submissionId = 'NS-' + timestamp.getTime().toString(36).toUpperCase();
+
+    console.log('doPost: appending sheet row, id=' + submissionId);
 
     // Append row to sheet
     sheet.appendRow([
@@ -91,17 +97,55 @@ function doPost(e) {
       '', // Notes
       'brief.newsystems.ca'
     ]);
+    const rowIndex = sheet.getLastRow();
+    console.log('doPost: sheet append complete, row=' + rowIndex);
 
-    // SECURITY: These emails MUST remain plain text (not htmlBody).
-    // User input is interpolated without HTML escaping.
-    // Converting to HTML emails requires escaping all user data first.
+    // Stamp rate limits now that the submission is safely stored.
+    // Earlier failures (hangs, validation errors) do not lock the user out.
+    stampEmailRateLimit(data.email);
+    incrementGlobalCounter();
 
-    sendConfirmationEmail(data);
-    sendTeamNotification(data, submissionId, timestamp);
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheetRowUrl = 'https://docs.google.com/spreadsheets/d/' + spreadsheet.getId()
+      + '/edit#gid=' + sheet.getSheetId() + '&range=A' + rowIndex;
 
+    // SECURITY: Confirmation email stays plain text. Team email is HTML, but
+    // every user-controlled field is passed through escapeHtml() before interpolation.
+
+    const emailFailures = [];
+
+    console.log('doPost: sending confirmation email');
+    try {
+      sendConfirmationEmail(data);
+      console.log('doPost: confirmation email sent');
+    } catch (emailErr) {
+      console.error('confirmation email failed: ' + emailErr.message);
+      emailFailures.push('confirmation');
+    }
+
+    console.log('doPost: sending team notification');
+    try {
+      sendTeamNotification(data, submissionId, timestamp, sheetRowUrl);
+      console.log('doPost: team notification sent');
+    } catch (emailErr) {
+      console.error('team notification failed: ' + emailErr.message);
+      emailFailures.push('team');
+    }
+
+    // Flag failed emails in Status column for manual follow-up
+    if (emailFailures.length > 0) {
+      try {
+        sheet.getRange(rowIndex, STATUS_COLUMN).setValue('EMAIL_FAILED: ' + emailFailures.join(', '));
+      } catch (statusErr) {
+        console.error('failed to write status flag: ' + statusErr.message);
+      }
+    }
+
+    console.log('doPost: complete');
     return respond({ success: true, id: submissionId });
 
   } catch (err) {
+    console.error('doPost exception: ' + err.message);
     return respond({ error: err.message });
   }
 }
@@ -111,36 +155,45 @@ function respond(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// Rate limiting: per email address
+// Rate limiting: per email address. Check and stamp are separate so a failed
+// submission (hang, validation error) does not lock the user out of retrying.
 function isEmailRateLimited(email) {
   const props = PropertiesService.getScriptProperties();
   const key = 'rate_' + email.toLowerCase().replace(/[^a-z0-9@.]/g, '');
   const last = props.getProperty(key);
-  const now = Date.now();
-  if (last && (now - parseInt(last)) < EMAIL_COOLDOWN_MS) {
+  if (last && (Date.now() - parseInt(last)) < EMAIL_COOLDOWN_MS) {
     return true;
   }
-  props.setProperty(key, now.toString());
   return false;
 }
 
-// Rate limiting: global per hour
+function stampEmailRateLimit(email) {
+  const props = PropertiesService.getScriptProperties();
+  const key = 'rate_' + email.toLowerCase().replace(/[^a-z0-9@.]/g, '');
+  props.setProperty(key, Date.now().toString());
+}
+
+// Rate limiting: global per hour. Check and increment are separate so invalid
+// or rejected requests do not consume the quota.
 function isGlobalRateLimited() {
   const props = PropertiesService.getScriptProperties();
-  const countKey = 'global_count';
-  const resetKey = 'global_reset';
+  const resetTime = parseInt(props.getProperty('global_reset') || '0');
+  if (Date.now() - resetTime > 3600000) return false;
+  const count = parseInt(props.getProperty('global_count') || '0');
+  return count >= MAX_SUBMISSIONS_PER_HOUR;
+}
+
+function incrementGlobalCounter() {
+  const props = PropertiesService.getScriptProperties();
   const now = Date.now();
-  const resetTime = parseInt(props.getProperty(resetKey) || '0');
-
+  const resetTime = parseInt(props.getProperty('global_reset') || '0');
   if (now - resetTime > 3600000) {
-    props.setProperty(countKey, '1');
-    props.setProperty(resetKey, now.toString());
-    return false;
+    props.setProperty('global_count', '1');
+    props.setProperty('global_reset', now.toString());
+  } else {
+    const count = parseInt(props.getProperty('global_count') || '0') + 1;
+    props.setProperty('global_count', count.toString());
   }
-
-  const count = parseInt(props.getProperty(countKey) || '0') + 1;
-  props.setProperty(countKey, count.toString());
-  return count > MAX_SUBMISSIONS_PER_HOUR;
 }
 
 function sendConfirmationEmail(data) {
@@ -165,23 +218,71 @@ function sendConfirmationEmail(data) {
   });
 }
 
-function sendTeamNotification(data, submissionId, timestamp) {
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeHtmlMultiline(s) {
+  return escapeHtml(s).replace(/\n/g, '<br>');
+}
+
+function sendTeamNotification(data, submissionId, timestamp, sheetRowUrl) {
   // Sanitize name for subject line
   const safeName = (data.firstName || '').replace(/[\r\n]/g, '').substring(0, 50)
     + ' ' + (data.lastName || '').replace(/[\r\n]/g, '').substring(0, 50);
   const subject = 'New Brief: ' + safeName.trim();
 
-  const body = [
-    'New brief submission received.',
-    '',
-    '---',
-    '',
+  const dateStr = timestamp.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+  const idHtml = sheetRowUrl
+    ? '<a href="' + escapeHtml(sheetRowUrl) + '">' + escapeHtml(submissionId) + '</a>'
+    : escapeHtml(submissionId);
+
+  const parts = [];
+  parts.push('<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5;">');
+  parts.push('<p><strong>Submission ID:</strong> ' + idHtml + '<br>');
+  parts.push('<strong>Date:</strong> ' + escapeHtml(dateStr) + '</p>');
+  parts.push('<hr>');
+  parts.push('<p><strong>Contact</strong></p>');
+  parts.push('<p>');
+  parts.push('<strong>Name:</strong> ' + escapeHtml((data.firstName || '') + ' ' + (data.lastName || '')));
+  parts.push('<br><strong>Email:</strong> ' + escapeHtml(data.email));
+  if (data.phone) parts.push('<br><strong>Phone:</strong> ' + escapeHtml(data.phone));
+  if (data.twitter) parts.push('<br><strong>Twitter:</strong> @' + escapeHtml(data.twitter));
+  if (data.instagram) parts.push('<br><strong>Instagram:</strong> @' + escapeHtml(data.instagram));
+  if (data.website) parts.push('<br><strong>Website:</strong> ' + escapeHtml(data.website));
+  if (data.company) parts.push('<br><strong>Company/Organization:</strong> ' + escapeHtml(data.company));
+  if (data.referral) parts.push('<br><strong>Referred via:</strong> ' + escapeHtml(data.referral));
+  parts.push('</p>');
+  parts.push('<hr>');
+  parts.push('<p><strong>Event Brief</strong></p>');
+  parts.push('<p><strong>1. Event Idea:</strong><br>' + escapeHtmlMultiline(data.idea) + '</p>');
+  parts.push('<p><strong>2. Mission Alignment:</strong><br>' + escapeHtmlMultiline(data.alignment) + '</p>');
+  parts.push('<p><strong>3. Spatial Requirements:</strong><br>' + escapeHtmlMultiline(data.spatial) + '</p>');
+  parts.push('<p><strong>4. Ideal Attendees:</strong> ' + escapeHtml(data.attendees) + '</p>');
+  parts.push('<p><strong>5. Takeaway:</strong><br>' + escapeHtmlMultiline(data.takeaway) + '</p>');
+  parts.push('<p><strong>6. Budget:</strong> ' + escapeHtml(data.budget) + '</p>');
+  parts.push('<p><strong>7. Ideal Date:</strong> ' + escapeHtml(data.idealDate) + '</p>');
+  parts.push('<p><strong>8. Timeframe:</strong><br>' + escapeHtmlMultiline(data.runtime) + '</p>');
+  parts.push('<hr>');
+  parts.push('<p>View all submissions in the Google Sheet.</p>');
+  parts.push('</div>');
+
+  const htmlBody = parts.join('\n');
+
+  // Plain-text fallback for clients that don't render HTML.
+  const plainBody = [
     'Submission ID: ' + submissionId,
-    'Date: ' + timestamp.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }),
+    sheetRowUrl ? 'Sheet row: ' + sheetRowUrl : null,
+    'Date: ' + dateStr,
     '',
     '--- Contact ---',
-    '',
-    'Name: ' + data.firstName + ' ' + data.lastName,
+    'Name: ' + (data.firstName || '') + ' ' + (data.lastName || ''),
     'Email: ' + data.email,
     data.phone ? 'Phone: ' + data.phone : null,
     data.twitter ? 'Twitter: @' + data.twitter : null,
@@ -191,36 +292,19 @@ function sendTeamNotification(data, submissionId, timestamp) {
     data.referral ? 'Referred via: ' + data.referral : null,
     '',
     '--- Event Brief ---',
-    '',
-    '1. Event Idea:',
-    data.idea,
-    '',
-    '2. Mission Alignment:',
-    data.alignment,
-    '',
-    '3. Spatial Requirements:',
-    data.spatial,
-    '',
-    '4. Ideal Attendees: ' + data.attendees,
-    '',
-    '5. Takeaway:',
-    data.takeaway,
-    '',
-    '6. Budget: ' + data.budget,
-    data.budget === 'No' && data.openToTrade ? '   Open to trade: ' + data.openToTrade : null,
-    '',
-    '7. Ideal Date: ' + data.idealDate,
-    '',
-    '8. Timeframe:',
-    data.runtime,
-    '',
-    '---',
-    '',
-    'View all submissions in the Google Sheet.'
+    '1. Event Idea:', data.idea, '',
+    '2. Mission Alignment:', data.alignment, '',
+    '3. Spatial Requirements:', data.spatial, '',
+    '4. Ideal Attendees: ' + data.attendees, '',
+    '5. Takeaway:', data.takeaway, '',
+    '6. Budget: ' + data.budget, '',
+    '7. Ideal Date: ' + data.idealDate, '',
+    '8. Timeframe:', data.runtime
   ].filter(function(line) { return line !== null; }).join('\n');
 
-  GmailApp.sendEmail(TEAM_EMAIL, subject, body, {
-    name: 'New Stadium Brief Form'
+  GmailApp.sendEmail(TEAM_EMAIL, subject, plainBody, {
+    name: 'New Stadium Brief Form',
+    htmlBody: htmlBody
   });
 }
 

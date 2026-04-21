@@ -204,7 +204,6 @@ form.addEventListener('submit', async (e) => {
     takeaway: document.getElementById('takeaway').value.trim(),
     budget: budgetVal,
     idealDate: document.getElementById('idealDate').value,
-    openToTrade: 'N/A',
   };
 
   try {
