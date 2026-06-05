@@ -132,6 +132,7 @@
 
         <fieldset class="field budget-fieldset">
           <legend><span class="q-num">6.</span> Do you have an existing venue budget?</legend>
+          <span class="field-description">For reference, New Stadium's standard rate is $350 per hour (minimum 3 hours). We try our best to help accommodate pending availability.</span>
           <div class="budget-group">
             <label class="radio-label">
               <input type="radio" name="hasBudget" value="yes" />
@@ -151,14 +152,28 @@
           </div>
         </fieldset>
 
+        <fieldset class="field budget-fieldset">
+          <legend><span class="q-num">7.</span> Will you be charging for this event?</legend>
+          <div class="budget-group">
+            <label class="radio-label">
+              <input type="radio" name="isCharging" value="yes" />
+              <span>Yes</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="isCharging" value="no" checked />
+              <span>No</span>
+            </label>
+          </div>
+        </fieldset>
+
         <div class="field">
-          <label for="idealDate"><span class="q-num">7.</span> What is the ideal date for this event/project?</label>
+          <label for="idealDate"><span class="q-num">8.</span> What is the ideal date for this event/project?</label>
           <input type="date" id="idealDate" name="idealDate" required class="input-short" />
           <span class="error" role="alert">Please select a date.</span>
         </div>
 
         <div class="field">
-          <label for="runtime"><span class="q-num">8.</span> What is the ideal timeframe for your event including setup and teardown?</label>
+          <label for="runtime"><span class="q-num">9.</span> What is the ideal timeframe for your event including setup and teardown?</label>
           <textarea id="runtime" name="runtime" rows="1" required class="input-long" placeholder="e.g., 5-6pm setup, 6-9pm event, 9-10pm teardown" maxlength="5000"></textarea>
           <span class="error" role="alert">Please describe the timeframe.</span>
         </div>

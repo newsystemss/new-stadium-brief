@@ -185,6 +185,9 @@ form.addEventListener('submit', async (e) => {
     ? '$' + (document.getElementById('budgetAmount').value || '0')
     : 'No';
 
+  const isChargingChecked = document.querySelector('input[name="isCharging"]:checked');
+  const isCharging = isChargingChecked && isChargingChecked.value === 'yes' ? 'Yes' : 'No';
+
   const data = {
     _token: 'ns-brief-2026',
     firstName: document.getElementById('firstName').value.trim(),
@@ -203,6 +206,7 @@ form.addEventListener('submit', async (e) => {
     runtime: document.getElementById('runtime').value.trim(),
     takeaway: document.getElementById('takeaway').value.trim(),
     budget: budgetVal,
+    isCharging: isCharging,
     idealDate: document.getElementById('idealDate').value,
   };
 

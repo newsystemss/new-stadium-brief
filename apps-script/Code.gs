@@ -90,7 +90,7 @@ function doPost(e) {
       data.attendees || '',
       data.takeaway || '',
       data.budget || '',
-      data.openToTrade || '',
+      data.isCharging || '',
       data.idealDate || '',
       data.runtime || '',
       '', // Status
@@ -267,8 +267,9 @@ function sendTeamNotification(data, submissionId, timestamp, sheetRowUrl) {
   parts.push('<p><strong>4. Ideal Attendees:</strong> ' + escapeHtml(data.attendees) + '</p>');
   parts.push('<p><strong>5. Takeaway:</strong><br>' + escapeHtmlMultiline(data.takeaway) + '</p>');
   parts.push('<p><strong>6. Budget:</strong> ' + escapeHtml(data.budget) + '</p>');
-  parts.push('<p><strong>7. Ideal Date:</strong> ' + escapeHtml(data.idealDate) + '</p>');
-  parts.push('<p><strong>8. Timeframe:</strong><br>' + escapeHtmlMultiline(data.runtime) + '</p>');
+  parts.push('<p><strong>7. Charging for event:</strong> ' + escapeHtml(data.isCharging) + '</p>');
+  parts.push('<p><strong>8. Ideal Date:</strong> ' + escapeHtml(data.idealDate) + '</p>');
+  parts.push('<p><strong>9. Timeframe:</strong><br>' + escapeHtmlMultiline(data.runtime) + '</p>');
   parts.push('<hr>');
   parts.push('<p>View all submissions in the Google Sheet.</p>');
   parts.push('</div>');
@@ -298,8 +299,9 @@ function sendTeamNotification(data, submissionId, timestamp, sheetRowUrl) {
     '4. Ideal Attendees: ' + data.attendees, '',
     '5. Takeaway:', data.takeaway, '',
     '6. Budget: ' + data.budget, '',
-    '7. Ideal Date: ' + data.idealDate, '',
-    '8. Timeframe:', data.runtime
+    '7. Charging for event: ' + data.isCharging, '',
+    '8. Ideal Date: ' + data.idealDate, '',
+    '9. Timeframe:', data.runtime
   ].filter(function(line) { return line !== null; }).join('\n');
 
   GmailApp.sendEmail(TEAM_EMAIL, subject, plainBody, {
@@ -335,7 +337,7 @@ function setupSheet() {
     'Attendees',
     'Takeaway',
     'Budget',
-    'Open to Trade',
+    'Charging for Event',
     'Ideal Date',
     'Timeframe',
     'Status',
