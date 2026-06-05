@@ -347,6 +347,10 @@ fieldset legend {
   color: #8b3a3a;
 }
 
+.budget-fieldset .field-description {
+  margin-bottom: 0.85rem;
+}
+
 /* Budget */
 .budget-group {
   display: flex;
