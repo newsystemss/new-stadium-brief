@@ -42,6 +42,9 @@ function doPost(e) {
         return respond({ error: 'Missing required field: ' + field });
       }
     }
+    if (!['twitter', 'instagram', 'website'].some(f => data[f] && String(data[f]).trim())) {
+      return respond({ error: 'Missing required field: twitter, instagram or website' });
+    }
 
     // Sanitize and truncate all string fields
     for (const key of Object.keys(data)) {

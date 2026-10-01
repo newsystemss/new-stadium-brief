@@ -89,6 +89,17 @@ function validateStep(stepNum) {
     }
   });
 
+  // Step 1 needs at least one of Twitter, Instagram or website.
+  if (stepNum === 1) {
+    const socialFields = step.querySelectorAll('.social-field');
+    const hasSocial = [...socialFields].some(f => f.querySelector('input').value.trim());
+    socialFields.forEach(f => f.classList.toggle('invalid', !hasSocial));
+    if (!hasSocial) {
+      valid = false;
+      if (!firstInvalid) firstInvalid = document.getElementById('twitter');
+    }
+  }
+
   // Conditional validation for the budget fieldset on step 2.
   if (stepNum === 2) {
     const budgetFieldset = document.querySelector('.budget-fieldset');
@@ -155,6 +166,13 @@ document.querySelectorAll('textarea').forEach(textarea => {
 document.querySelectorAll('.field input, .field textarea').forEach(input => {
   input.addEventListener('input', () => {
     input.closest('.field').classList.remove('invalid');
+  });
+});
+
+// Filling any one social field clears the whole group
+document.querySelectorAll('.social-field input').forEach(input => {
+  input.addEventListener('input', () => {
+    document.querySelectorAll('.social-field').forEach(f => f.classList.remove('invalid'));
   });
 });
 
